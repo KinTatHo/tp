@@ -20,7 +20,7 @@ public class ResetPaymentsCommandTest {
 
     @Test
     public void execute_paymentResetSuccessfully() throws Exception {
-        Person personToResetPayment = new PersonBuilder().build(); // Assuming initial payment amount is set
+        Person personToResetPayment = new PersonBuilder().withPayment(50.0).build();
         model.addPerson(personToResetPayment);
         Id idOfPerson = personToResetPayment.getUniqueId();
 
@@ -44,4 +44,18 @@ public class ResetPaymentsCommandTest {
         assertThrows(CommandException.class,
                 Messages.MESSAGE_PERSON_NOT_FOUND, () -> resetPaymentsCommand.execute(model));
     }
+
+    @Test
+    public void execute_paymentAlreadyAtZero_throwsCommandException() {
+        Person personWithZeroPayment = new PersonBuilder().withPayment("0.0").build();
+        model.addPerson(personWithZeroPayment);
+        Id idOfPerson = personWithZeroPayment.getUniqueId();
+
+        ResetPaymentsCommand resetPaymentsCommand = new ResetPaymentsCommand(idOfPerson);
+
+        // Assert that executing the command throws CommandException
+        assertThrows(CommandException.class, "Payment is already at 0.", ()
+                -> resetPaymentsCommand.execute(model));
+    }
+
 }

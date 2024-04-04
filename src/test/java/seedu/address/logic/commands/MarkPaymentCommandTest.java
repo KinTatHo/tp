@@ -20,7 +20,7 @@ public class MarkPaymentCommandTest {
 
     @Test
     public void execute_paymentUpdatedSuccessfully() throws Exception {
-        Person personToMarkPayment = new PersonBuilder().build();
+        Person personToMarkPayment = new PersonBuilder().withPayment(60.0).build();
         model.addPerson(personToMarkPayment);
         Id idOfPerson = personToMarkPayment.getUniqueId();
 
@@ -44,5 +44,33 @@ public class MarkPaymentCommandTest {
 
         assertThrows(CommandException.class,
                 Messages.MESSAGE_PERSON_NOT_FOUND, () -> markPaymentCommand.execute(model));
+    }
+
+    @Test
+    public void execute_paymentAlreadySettled_throwsCommandException() {
+        Person personWithZeroPayment = new PersonBuilder().withPayment("0.0").build();
+        model.addPerson(personWithZeroPayment);
+        Id idOfPerson = personWithZeroPayment.getUniqueId();
+
+        MarkPaymentCommand markPaymentCommand = new MarkPaymentCommand(idOfPerson, 50.0);
+
+        // Assert that executing the command throws CommandException
+        assertThrows(CommandException.class,
+                "Payment is already fully settled for person with ID: "
+                        + idOfPerson, () -> markPaymentCommand.execute(model));
+    }
+
+    @Test
+    public void execute_amountExceedsCurrentPayment_throwsCommandException() {
+        Person personWithPayment = new PersonBuilder().withPayment("50.0").build();
+        model.addPerson(personWithPayment);
+        Id idOfPerson = personWithPayment.getUniqueId();
+
+        MarkPaymentCommand markPaymentCommand = new MarkPaymentCommand(idOfPerson, 100.0);
+
+        // Assert that executing the command throws CommandException
+        assertThrows(CommandException.class,
+                "Amount to mark as paid exceeds the current payment due of $50.00 for person with ID: "
+                        + idOfPerson, () -> markPaymentCommand.execute(model));
     }
 }

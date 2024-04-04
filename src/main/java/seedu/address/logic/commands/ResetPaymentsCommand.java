@@ -23,6 +23,9 @@ public class ResetPaymentsCommand extends Command {
             + PREFIX_ID + " 000001 ";
 
     public static final String MESSAGE_SUCCESS = "Payments reset for person with ID: %1$s";
+
+    public static final String MESSAGE_PAYMENT_ALREADY_SETTLED =
+            "Payment is already at 0.";
     private final Id uniqueId;
 
     /**
@@ -40,6 +43,10 @@ public class ResetPaymentsCommand extends Command {
 
         if (personToUpdate == null) {
             throw new CommandException(Messages.MESSAGE_PERSON_NOT_FOUND);
+        }
+
+        if (personToUpdate.getPayment().getAmount() == 0) {
+            throw new CommandException(MESSAGE_PAYMENT_ALREADY_SETTLED);
         }
 
         Payment newPayment = new Payment(0);
