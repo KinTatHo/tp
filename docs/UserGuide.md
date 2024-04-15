@@ -200,7 +200,7 @@ These student details can be found in the `test.json` file that we have included
 
 **Tip:** <br>
 * To match the results shown in the illustrations within our User Guide, we recommend replacing the contents of the `data/tuteetally.json`file in your directory where `TuteeTally.jar` is saved with the data from 
-[here](https://github.com/AY2324S2-CS2103T-F10-2/tp/tree//DummyData/dummydata.json). <br>
+[here](https://github.com/AY2324S2-CS2103T-F10-2/tp/blob/master/DummyData/dummydata.json). <br>
 * This will ensure your outputs align with the examples provided in our guide. <br>
 
 </box>
